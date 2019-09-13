@@ -1,0 +1,20 @@
+<p-panel [toggleable]="true" [style]="{'margin-top':'0.5em'}">
+    <p-header>
+        {{setTitle}}
+        <p-button (onClick)="fileUpload.click()" icon="fa fa-fw fa-plus" label="Choose"></p-button>
+        <p-button class="hide" icon="fa fa-fw fa-upload" label="Upload" id="btnUpload" (onClick)="uploadFile()"></p-button>
+        <input type="file" #fileUpload (change)="getFile($event)" multiple="multiple" accept="image/*" class="hide">
+    </p-header>
+    <ng-content></ng-content>
+    <div *ngFor="let u of urls; let i=index;" class="ui-g">
+        <div class="ui-g-4">
+            <img [src]="u.content" class="img-upload">
+        </div>
+        <div class="ui-g-7 ui-g-nopad">
+            <span><small>{{u.name}}</small> | <small>{{u.size}} KB</small></span>
+        </div>
+        <div class="ui-g-1">
+            <p-button icon="fa fa-fw fa-close" (onClick)="removeImage(i)"></p-button>
+        </div>
+    </div>
+</p-panel>

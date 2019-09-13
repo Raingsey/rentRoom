@@ -1,0 +1,119 @@
+<p-growl></p-growl>
+<div *ngIf="formStatus == 'list'; else form;">
+    <app-list-deep [data]="objList.results" [cols]="cols"
+                   [numRecords]="objList.length"
+                   [range]="false"
+                   [pageRows]="2"
+                   [pageOptions]="[2, 4, 6]"
+                   [actionRows]="['Detail', 'Delete']" (onActionRow)="onAction($event)"
+                   (onActionNew)="showNewForm()"
+                   (onActionSearch)="search($event)"
+                   (onActionPage)="pageEvent($event)">
+    </app-list-deep>
+</div>
+<ng-template #form>
+    <div *ngIf="formStatus == 'detail'; else action;">
+        <h5 class="page-title">{{obj.first_name}} : {{obj.last_name}}</h5>
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <div *ngFor="let pro of obj.customer_profiles">
+                    <img [src]="baseServerPath + pro.file_path" class="img-upload">
+
+                    {{pro.file_name}}
+                </div>
+
+            </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="ui-g">
+            <div class="ui-g-12 action-blog">
+                <p-button (click)="showEditForm(obj)" label="Edit customer " icon="fa fa-fw fa-edit"></p-button>&nbsp;&nbsp;&nbsp;
+                <p-button (click)="showDeleteForm()" label="Delete customer" icon="fa fa-fw fa-trash"></p-button>&nbsp;&nbsp;&nbsp;
+                <p-button (click)="cancelShowForm()" label="Go Back" styleClass="ui-button-secondary" icon="fa fa-fw fa-arrow-left"></p-button>
+            </div>
+        </div>
+    </div>
+    <ng-template #action>
+
+        <form [formGroup]="f" (ngSubmit)="saveObject(f.value)">
+
+            <input type="hidden" formControlName="id">
+
+            <div class="ui-g">
+                <div class="ui-g-8">
+
+                    <div class="ui-g">
+                        <label class="ui-g-2">First Name *: </label>
+                        <div class="ui-g-4">
+                            <input type="text" pInputText placeholder="Customer Name" formControlName="first_name">
+                            <small *ngIf="f.controls['first_name'].hasError('required') && f.controls['first_name'].touched" class="text-danger">Field required</small>
+                        </div>
+
+                        <label class="ui-g-2">Last Name *: </label>
+                        <div class="ui-g-4">
+                            <input type="text" pInputText placeholder="Customer #" formControlName="last_name">
+                            <small *ngIf="f.controls['last_name'].hasError('required') && f.controls['last_name'].touched" class="text-danger">Field required</small>
+                        </div>
+                    </div>
+
+                    <div class="ui-g">
+                        <label class="ui-g-2">Gender * : </label>
+                        <div class="ui-g-4">
+                            <div class="ui-g-12">
+                                <span *ngFor="let gender of objGenderList">
+                                  <p-radioButton formControlName="gender"  name="gender" [value]="gender.id" [label]="gender.gender"></p-radioButton>&nbsp;&nbsp;&nbsp;
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ui-g">
+                        <label class="ui-g-2">Date of birth * : </label>
+                        <div class="ui-g-4">
+                            <p-calendar formControlName="dob" [showIcon]="true" [monthNavigator]="true" [yearNavigator]="true" yearRange="1940:2050" placeholder="Date of birth" dateFormat="dd-M-yy"></p-calendar>
+                        </div>
+                        <label class="ui-g-2">Nationality : </label>
+                        <div class="ui-g-4">
+                            <p-dropdown formControlName="nationality" [options]="objNationalityList" optionLabel="nationality" dataKey="id" placeholder="-- Select nationality --"></p-dropdown>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="ui-g-4 ui-g-nopad">
+                    <div class="profile-picture ui-g-12">
+                        <app-file-upload id="fileProfile" setTitle="Profile &nbsp;&nbsp;&nbsp;" (onUpload)="onUploadCusProfile($event)">
+                            <div *ngIf="formStatus == 'edit'" formArrayName="customer_profiles">
+                                <div  *ngFor="let cnt of f.controls['customer_profiles'].controls; let i = index" [formGroupName]="i">
+                                    <div class="ui-g" *ngIf="cnt.value.status">
+                                        <div class="ui-g-4">
+                                            <img [src]="baseServerPath + cnt.value.file_path" class="img-upload">
+                                        </div>
+                                        <div class="ui-g-7">
+                                            <small>{{cnt.value.file_name}}</small>
+                                        </div>
+                                        <div class="ui-g-1">
+                                            <p-button (click)="deleteCustomerProfile(i)" icon="fa fa-fw fa-close" styleClass="ui-button-warning"></p-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </app-file-upload>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <button type="submit" pButton label="Create new customer" [disabled]="!f.valid" *ngIf="formStatus == 'new'" icon="fa fa-fw fa-save"></button>
+                    <button type="submit" pButton label="Update customer" [disabled]="!f.valid" *ngIf="formStatus == 'edit'" icon="fa fa-fw fa-save"></button>
+                    &nbsp;&nbsp;&nbsp;<p-button label="Go Back" styleClass="ui-button-secondary" *ngIf="formStatus == 'edit'" (click)="showDetailForm(obj)" icon="fa fa-fw fa-arrow-left"></p-button>
+                    &nbsp;&nbsp;&nbsp;<p-button label="Back to list" styleClass="ui-button-secondary" (click)="cancelShowForm()" icon="fa fa-fw fa-arrow-left"></p-button>
+                </div>
+            </div>
+        </form>
+
+    </ng-template>
+</ng-template>
+<p-confirmDialog></p-confirmDialog>

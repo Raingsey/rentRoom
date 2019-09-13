@@ -1,0 +1,85 @@
+<p-growl></p-growl>
+<div *ngIf="formStatus == 'list'; else assign">
+    <p-card styleClass="ui-card-shadow">
+        <form [formGroup]="fs" (ngSubmit)="search(fs.getRawValue())">
+            <div class="ui-g">
+                <div class="ui-g-12 text-left">
+                    <p-button label="Add new" icon="fa fa-fw fa-plus" (click)="showNewForm()" ></p-button>
+                    <button pButton type="submit" icon="fa fa-fw fa-search" class="ui-button-secondary" label="Search"></button>
+                </div>
+                <div class="ui-g-12 ui-g-nopad m-top-8">
+                    <div class="ui-g-12">
+                        <input type="text" pInputText placeholder="Search" formControlName="query">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </p-card>
+    <app-list-deep [cols]="cols" [data]="objList.results"
+                   [isNullShow]="isNullShow"
+                   [stopLoading]="stopLoading"
+                   [numRecords]="objList.length"
+                   [pageRows]="numRecord"
+                   [default_action]="true"
+                   (onActionPage)="pageEvent($event)"
+                   [actionRows]="['Edit','Detail']" (onActionRow)="onAction($event)">
+    </app-list-deep>
+</div>
+
+<ng-template #assign >
+    <div *ngIf="formStatus == 'assign'; else form">
+        <div class="ui-g">
+            <div class="ui-g-8">
+                <div class="ui-g-6">
+                    <label>Role name : </label>
+                    <p-dropdown styleClass="full-width" class="" [options]="objList.results" [filter]="true" [ngModel]="obj" (onChange)="onRoleChange($event)" dataKey="id" optionLabel="role_name"  placeholder="-- Select Role --" ></p-dropdown>
+                </div>
+                <div class="ui-g-10">
+                    <label class="form-text">Menu Permission :</label>
+                    <ngx-treeview
+                            [config]="config"
+                            [items]="items"
+                            (selectedChange)="values = $event">
+                        (onSelectedChange)
+                    </ngx-treeview>
+                </div>
+            </div>
+        </div>
+        <div class="ui-g">
+            <div class="ui-g-10">
+                <p-button icon="fa fa-fw fa-save" (click)="saveAssignForm()" label="Save"></p-button >
+                <p-button icon="fa fa-arrow-left" styleClass="ui-button-secondary" (click)="cancelShowForm()" label="Back To List"></p-button>
+            </div>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #form>
+    <form [formGroup]="f" (ngSubmit)="saveObject(f.value)" enctype="multipart/form-data">
+        <div class="ui-g">
+
+            <input type="hidden" formControlName="id">
+
+            <div class="ui-g-4">
+                <label>Role Name <span class="required">*</span> : </label>
+                <input placeholder="Role Name" pInputText formControlName="role_name">
+                <small *ngIf="f.controls['role_name'].hasError('required') && f.controls['role_name'].touched" class="text-danger">Field require</small>
+            </div>
+
+            <div class="ui-g-4">
+                <label>Description :</label>
+                <input placeholder="Description" pInputText formControlName="description">
+            </div>
+        </div>
+        <div class="divider"></div>
+
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <p-button *ngIf="formStatus == 'new'" icon="fa fa-fw fa-save"   color="accent" type="submit" [disabled]="!f.valid" label="Save"></p-button >
+                <p-button *ngIf="formStatus == 'edit'" icon="fa fa-fw fa-save"   color="accent" type="submit" [disabled]="!f.valid" label="Update"></p-button >
+                <p-button icon="fa fa-arrow-left" styleClass="ui-button-secondary"  (click)="cancelShowForm()" label="Back To List"></p-button >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button *ngIf="formStatus == 'edit'" icon="fa fa-plus" pButton class="ui-button-success" (click)="showAssignForm(obj)" label="Assign"></button >
+            </div>
+        </div>
+    </form>
+</ng-template>

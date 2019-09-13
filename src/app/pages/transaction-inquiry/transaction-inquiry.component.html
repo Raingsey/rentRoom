@@ -1,0 +1,289 @@
+<p-growl></p-growl>
+<div [ngSwitch]="true">
+    <div *ngSwitchCase="formStatus == 'list'">
+        <p-card styleClass="ui-card-shadow">
+            <form
+                    [formGroup]="fs"
+                    (ngSubmit)="search(fs.getRawValue())">
+                <div class="ui-g">
+                    <div class="ui-g-12 text-left">
+                        <p-button label="Back to Merchant" *ngIf="merchant" icon="fa fa-fw fa-arrow-left" styleClass="ui-button-secondary" (click)="onBack()" ></p-button>
+                        <button pButton type="submit" icon="fa fa-fw fa-search" class="ui-button-secondary" label="Search"></button>
+                        <button pButton type="button" label="Export CSV" icon="fa fa-fw fa-download" class="pull-right" styleClass="ui-button-info" (click)="fs.value.transaction_type = fs.value.transaction_type?.code;fs.value.transaction_status = fs.value.transaction_status?.code;export(fs.value)"></button>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad m-top-8">
+                        <div class="ui-g-3">
+                            <input type="text" pInputText placeholder="Pi Pay TID/Partner TID" formControlName="partner_trans_id">
+                        </div>
+                        <div class="ui-g-3">
+                            <input type="text" pInputText placeholder="Reference ID" formControlName="partner_refund_id">
+                        </div>
+                        <div class="ui-g-3">
+                            <input type="text" pInputText placeholder="Customer ID" formControlName="alipay_buyer_user_id">
+                        </div>
+                        <div class="ui-g-3">
+                            <input type="text" pInputText placeholder="IntL. Payment ID" formControlName="alipay_trans_id">
+                        </div>
+                        <div class="ui-g-3">
+                            <input type="text" pInputText placeholder="Store Name" formControlName="store_name">
+                        </div>
+                        <div class="ui-g-3">
+                            <input type="text" pInputText placeholder="Store ID" formControlName="store_id">
+                        </div>
+                        <div class="ui-g-3">
+                            <input type="text" pInputText placeholder="Device ID" formControlName="device_id">
+                        </div>
+                        <div class="ui-g-3">
+                            <input type="number" pInputText placeholder="Amount From" formControlName="amount_from">
+                        </div>
+                        <div class="ui-g-3">
+                            <input type="number" pInputText placeholder="Amount To" formControlName="amount_to">
+                        </div>
+                        <div class="ui-g-3">
+                            <p-calendar placeholder="Created From Date" [hourFormat]="12" [showTime]="true" [showIcon]="true" [keepInvalid]="false" (onSelect)="validatesStart($event)" formControlName="from_date" showButtonBar="true"></p-calendar>
+                        </div>
+                        <div class="ui-g-3">
+                            <p-calendar placeholder="To Date" [hourFormat]="12" [showTime]="true" [showIcon]="true" [keepInvalid]="false" (onSelect)="validatesEnd($event)" formControlName="to_date" showButtonBar="true"></p-calendar>
+                            <small *ngIf="fs.controls['to_date'].touched && validate" class="text-danger">Please select date greater than Created From Date</small>
+                        </div>
+                        <div class="ui-g-3">
+                            <p-dropdown [options]="objTrxWorkflowList"  optionLabel="name" formControlName="trx_workflow" placeholder="-- Workflow --" [showClear]="true"></p-dropdown>
+                        </div>
+                        <div class="ui-g-3">
+                            <p-dropdown [options]="objTranStatusList"  optionLabel="name" formControlName="transaction_status" placeholder="-- Transaction Status --" [showClear]="true"></p-dropdown>
+                        </div>
+                        <div class="ui-g-3">
+                            <p-dropdown [options]="objChannelList"  optionLabel="name" formControlName="channel" placeholder="-- Channel --" [showClear]="true"></p-dropdown>
+                        </div>
+                        <div class="ui-g-3">
+                            <p-dropdown [options]="objIntlPayment"  optionLabel="name" formControlName="tran_payment_service" placeholder="-- Intl Payment Service --" [showClear]="true"></p-dropdown>
+                        </div>
+                        <div class="ui-g-3">
+                            <p-dropdown [options]="objTranTypeList" optionLabel="name" formControlName="transaction_type" placeholder="-- Transaction Type --" [showClear]="true"></p-dropdown>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        </p-card>
+        <div class="my-lists">
+            <p-table [columns]="cols" [style]="{width: '150%'}" [value]="objList.results" lazy="true" [scrollable]="true" [responsive]="true" sortMode="multiple">
+                <ng-template pTemplate="caption">
+                    <div style="height: 4px; margin-top: 4px;">
+                        <p-progressBar mode="indeterminate" [style]="{'height': '4px'}" *ngIf="!stopLoading"></p-progressBar>
+                    </div>
+                </ng-template>
+
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="width: 40px;">#</th>
+                        <th pSortableColumn="store_name">
+                            Store
+                            <p-sortIcon field="store_name"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="dev_name">
+                            Device
+                            <p-sortIcon field="dev_name"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="partner_trans_id">
+                            Pi Pay TID/Partner TID
+                            <p-sortIcon field="partner_trans_id"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="alipay_trans_id">
+                            IntL. Payment ID
+                            <p-sortIcon field="alipay_trans_id"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="partner_refund_id">
+                            Ref. ID
+                            <p-sortIcon field="partner_refund_id"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="trans_type">
+                            Tran.Type
+                            <p-sortIcon field="trans_type"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="tran_payment_service">
+                            Intl. Pay. Type
+                            <p-sortIcon field="tran_payment_service"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="total_fee">
+                            Gross Amt.
+                            <p-sortIcon field="total_fee"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="fee_rate_amount">
+                            MDR
+                            <p-sortIcon field="fee_rate_amount"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="net_amount">
+                            Net Amt.
+                            <p-sortIcon field="net_amount"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="created_date">
+                            Payment Date
+                            <p-sortIcon field="created_date"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="trans_status">
+                            Status
+                            <p-sortIcon field="trans_status"></p-sortIcon>
+                        </th>
+                        <th>Action</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns" let-i="rowIndex">
+                    <tr>
+                        <td style="width: 40px; text-align: center;">{{i+1}}</td>
+                        <td>{{rowData.store_name}} <span class="property-code">[{{rowData.store_id}}]</span></td>
+                        <td>{{rowData.dev_name}} <span class="property-code">[{{rowData.dev_id}}]</span></td>
+                        <td>{{rowData.partner_trans_id}}{{ rowData.partner_trans_id && rowData.dfs_partner_trans_id ? "/": null }}{{rowData.dfs_partner_trans_id ? rowData.dfs_partner_trans_id: null }}</td>
+                        <td>{{rowData.alipay_trans_id}}</td>
+                        <td>{{rowData.partner_refund_id}}</td>
+                        <td class="text-center">{{rowData.trans_type}}</td>
+                        <td class="text-center">{{rowData.tran_payment_service}}</td>
+                        <td class="text-center">{{rowData.gross_amount | number: '.2'}}</td>
+                        <td class="text-center">{{rowData.fee_rate_amount | number: '.2'}}</td>
+                        <td class="text-center">{{rowData.net_amount | number: '.2'}}</td>
+                        <td class="text-center">{{rowData.created_date | dynamic: 'dateTimeSimfoni'}}</td>
+                        <td class="text-center"><span [ngStyle]="statusStyle(rowData.trans_status)">{{rowData.trans_status}}</span></td>
+                        <td class="text-center">
+                            <a (click)="showDetailForm(rowData)">Detail</a>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr *ngIf="isNullShow">
+                        <td [colSpan]="17">No record</td>
+                    </tr>
+                </ng-template>
+
+            </p-table>
+        </div>
+        <p-paginator [rows]="numRecord" [first]="pageIndex" [totalRecords]="objList.length" [rowsPerPageOptions]="[10, 25, 50, 100]" (onPageChange)="pageEvent($event)" [alwaysShow]="false"></p-paginator>
+    </div>
+
+    <div *ngSwitchCase="formStatus == 'detail'">
+        <div class="ui-g detail-view">
+
+            <strong class="ui-g-2">Transaction : </strong>
+            <strong class="ui-g-10">{{obj.trans_type}}</strong>
+
+            <strong class="ui-g-2">Customer ID : </strong>
+            <span class="ui-g-10">{{obj.alipay_buyer_user_id | nullShow}}</span>
+
+            <strong class="ui-g-2">Merchant : </strong>
+            <span class="ui-g-10">{{obj.mcn_name}} <span class="property-code">[{{obj.mcn_id}}]</span></span>
+
+            <strong class="ui-g-2">Username : </strong>
+            <span class="ui-g-10">{{obj.merchant_username | nullShow}}</span>
+
+
+            <strong class="ui-g-2">Store : </strong>
+            <span class="ui-g-10">{{obj.store_name}} <span class="property-code">[{{obj.store_id}}]</span></span>
+
+            <strong class="ui-g-2">MCC : </strong>
+            <span class="ui-g-10">{{obj.store_mcc | nullShow}} </span>
+
+            <strong class="ui-g-2">Device : </strong>
+            <span class="ui-g-10">{{obj.dev_name}} <span class="property-code">[{{obj.dev_id}}]</span></span>
+
+            <strong class="ui-g-2"> Pi Pay TID : </strong>
+            <span class="ui-g-10">{{obj.partner_trans_id | nullShow}}</span>
+
+            <strong class="ui-g-2">Intl Payment ID  : </strong>
+            <span class="ui-g-10">{{obj.alipay_trans_id | nullShow}}</span>
+
+            <strong class="ui-g-2">Ref. ID </strong>
+            <span class="ui-g-10">{{obj.partner_refund_id | nullShow}}</span>
+
+            <strong class="ui-g-2">Remaining Amount : </strong>
+            <span class="ui-g-10">{{obj.rest_amount | number: '.2'}}</span>
+
+            <strong class="ui-g-2">Gross Amount : </strong>
+            <span class="ui-g-10">{{obj.gross_amount | number: '.2'}}</span>
+
+            <strong class="ui-g-2">MDR : </strong>
+            <span class="ui-g-10">{{obj.fee_rate_amount | number: '.2'}}</span>
+
+            <strong class="ui-g-2">Net Amount : </strong>
+            <span class="ui-g-10">{{obj.net_amount | number: '.2'}}</span>
+
+            <strong class="ui-g-2">Channel : </strong>
+            <span class="ui-g-10">{{obj.channel}}</span>
+
+            <strong class="ui-g-2">Intl. Payment Type : </strong>
+            <span class="ui-g-10">{{obj.tran_payment_service}}</span>
+
+            <strong class="ui-g-2">Trans. Workflow : </strong>
+            <span class="ui-g-10">{{obj.trx_workflow}}</span>
+
+            <strong class="ui-g-2">Created Date : </strong>
+            <span class="ui-g-10">{{obj.created_date | dynamic: 'dateTimeSimfoni'}}</span>
+
+            <strong class="ui-g-2">Trans. Date : </strong>
+            <span class="ui-g-10">{{obj.trans_date | dynamic: 'dateTimeSimfoni' | nullShow}}</span>
+
+            <strong class="ui-g-2">Intl. Transaction Date : </strong>
+            <span class="ui-g-10">{{obj.alipay_pay_date | dynamic: 'dateTimeSimfoni' | nullShow}}</span>
+
+            <strong class="ui-g-2">Status : </strong>
+            <span class="ui-g-10"><span [ngStyle]="statusStyle(obj.trans_status)">{{obj.trans_status}}</span></span>
+
+            <strong class="ui-g-2">Error Code : </strong>
+            <span class="ui-g-10">{{obj.error_code | nullShow}}</span>
+
+            <strong class="ui-g-2">Error Message : </strong>
+            <span class="ui-g-10">{{obj.error_message | nullShow }}</span>
+
+            <strong class="ui-g-2">Remark : </strong>
+            <span class="ui-g-10">{{obj.remark | nullShow}}</span>
+
+
+
+            <span class="ui-g-12">
+                <span *ngIf="obj.trans_type === 'Sale'">
+
+                    <span *ngIf="obj.trans_status !== 'Pending' || obj.trans_status !== 'Failed'">
+                       <span *ngIf="isRemainAmount">
+
+                        <span *ngIf="obj.rest_amount === obj.gross_amount">
+
+                          <span *ngIf="hideBtn">
+                             <p-button label="Void" *ngIf="voidBtn" styleClass="ui-button-primary" (click)="getObjVoid(obj.partner_trans_id)" ></p-button>
+                          </span>
+
+                        </span>
+
+                        <span *ngIf="obj.rest_amount !== 0.00">
+
+                            <p-button label="Refund" *ngIf="refundBtn" styleClass="ui-button-success" (click)="getObjRefund(obj.partner_trans_id)" ></p-button>
+
+                        </span>
+
+                      </span>
+                    </span>
+
+                </span>
+            </span>
+        </div>
+        <div class="divider"></div>
+        <div class="ui-g">
+            <div class="ui-g-12 action-blog">
+                <p-button label="Back to list" styleClass="ui-button-secondary" (click)="cancelShowForm()" icon="fa fa-fw fa-arrow-left"></p-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-refund-dialog
+        [obj]="objRefund"
+        [data]="data"
+        (ActionRefund)="onActionRefund($event)"
+        [display_prompt]="info_refund_status"
+>
+</app-refund-dialog>
+
+<app-void-dialog
+        [data]="data"
+        [reason]="reason"
+        (ActionReason)="showVoidForm($event)"
+        [display_prompt]="info_cancel_status"
+>
+</app-void-dialog>

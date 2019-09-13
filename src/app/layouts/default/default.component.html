@@ -1,0 +1,24 @@
+<div class="site-container" [ngClass]="getClasses()" [attr.dir]="rtl ? 'rtl' : null">
+
+  <div class="loading" *ngIf="showLoading">
+    <div class="spinner">
+      <p-progressSpinner [style]="{width: '55px', height: '55px'}" strokeWidth="3" fill="#EEEEEE" animationDuration=".5s"></p-progressSpinner>
+      <p>Processing...</p>
+    </div>
+  </div>
+
+  <app-horizontal-navbar [title]="pageTitle" (sidebarState)="sidebarState()" (compressState)="compressState()"></app-horizontal-navbar>
+
+  <app-vertical-navbar></app-vertical-navbar>
+
+  <!--<addition-navbar></addition-navbar>-->
+
+  <main class="main-content">
+    <div class="main-content-wrap">
+      <router-outlet></router-outlet>
+    </div>
+    <app-footer></app-footer>
+  </main>
+
+  <div class="app-overlay"></div>
+</div>

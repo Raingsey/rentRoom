@@ -1,0 +1,164 @@
+// Bootstrap overrides
+//
+// Copy variables from `_variables.scss` to this file to override default values
+// without modifying source files.
+@import '../variable';
+
+.form-horizontal .control-label {
+  text-align: left !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.form-control.ng-invalid.ng-touched {
+  border-color: #a94442;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+}
+.radio label {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.radio label span {
+  font-style: italic;
+  font-size: 90%;
+}
+.no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+.suffix, .prefix {
+  position: relative;
+}
+.prefix input {
+  padding-left: 25px !important;
+}
+.suffix input {
+  padding-right: 25px !important;
+}
+.prefix span {
+  position: absolute;
+  left: 16px;
+  top: 0.5em;
+  line-height: 30px;
+}
+.suffix span {
+  position: absolute;
+  right: 16px;
+  top: 0.5em;
+  line-height: 27px;
+}
+.form-grid tr td {
+  padding: 0 5px;
+}
+.form-grid tr:first-child td {
+  text-align: center;
+}
+.grid-form {
+  // display: table;
+  .header {
+    display: table-row;
+    label {
+      display: table-cell;
+      font-weight: 500;
+      font-size: 13px;
+      text-align: center;
+      padding: 0 6px;
+    }
+    span {
+      display: table-cell;
+      text-align: center;
+      padding: 4px;
+    }
+  }
+  .grid-row {
+    display: table-row;
+    .col {
+      display: table-cell;
+      text-align: center;
+      padding: 0 5px;
+    }
+    span {
+      display: table-cell;
+      text-align: center;
+      padding: 4px;
+    }
+    .suffix {
+      span {
+        right: 8px;
+        top: -3px;
+      }
+    }
+    .prefix {
+      span {
+        left: 8px;
+        top: -3px;
+      }
+    }
+  }
+  .grid-footer {
+    padding: 6px 6px 0 6px;
+  }
+}
+.divider {
+  width: calc(100% - 1em);
+  height: 1px;
+  background-color: #cccccc;
+  margin: 6px 0.5em;
+}
+.table-sm {
+  tr {
+    th {
+      padding: $table-sm-padding !important;
+      background: $table-sm-bg;
+      color: $table-sm-th-color;
+    }
+    td {
+      padding: $table-sm-padding !important;
+      a {
+        color: #029acf;
+        cursor: pointer;
+        text-decoration: underline;
+      }
+      a:hover {
+        color: #0b68ea;
+      }
+    }
+  }
+  font-size: 13px;
+}
+.detail {
+  span {
+    display: inline-block;
+  }
+}
+.decoration{
+  text-decoration: underline;
+}
+.form-group-custom {
+  margin-bottom: 5px !important;
+}
+.form-group-sm .control-label {
+  font-weight: 500;
+}
+form .ui-inputtext {
+  line-height: 19px;
+}
+.ui-placeholder {
+  color: #777777 !important;
+}
+.ui-multiselect {
+  width: 100% !important;
+}

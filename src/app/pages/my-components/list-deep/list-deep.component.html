@@ -1,0 +1,114 @@
+<div class="my-list">
+    <p-table [columns]="cols" [value]="data" (sortFunction)="customSort($event)" [customSort]="true" [responsive]="true">
+        <ng-template pTemplate="caption">
+            <ng-content></ng-content>
+            <div style="height: 4px; margin-top: 4px;">
+                <p-progressBar mode="indeterminate" [style]="{'height': '4px'}" *ngIf="!stopLoading"></p-progressBar>
+            </div>
+        </ng-template>
+        <div *ngIf="showList">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngIf="range" style="width: 65px;">#</th>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field" [ngClass]="col.class">
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                    <th *ngIf="actionRows.length > 0">Action</th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-i="rowIndex">
+                <tr>
+                    <td *ngIf="range" style="width: 65px;text-align:center;">{{i+1}}</td>
+                    <td *ngFor="let col of columns" [ngClass]="col.class">
+                        <span [ngSwitch]="true">
+                            <span *ngSwitchCase="col.field === 'store.store_name'">
+                                {{rowData.store.store_name}} <span class="property-code">[{{rowData.store.store_id}}]</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'merchant.mcn_name'">
+                                {{rowData.merchant.mcn_name}} <span class="property-code">[{{rowData.merchant.mcn_id}}]</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'device.dev_name'">
+                                {{rowData.device.dev_name}} <span class="property-code">[{{rowData.device.dev_id}}]</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'batch_status'">
+                                <span [ngStyle]="batchStatusStyle(rowData.batch_status)">{{rowData.batch_status}}</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'refund_status'">
+                                <span [ngStyle]="statusStyle(rowData.refund_status)">{{rowData.refund_status}}</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'mcn_status'">
+                                <span [ngStyle]="myStatusStyle(rowData.mcn_status)">{{rowData.mcn_status}}</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'partner_status'">
+                                <span [ngStyle]="myStatusStyle(rowData.partner_status)">{{rowData.partner_status}}</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'store_status'">
+                                <span [ngStyle]="myStatusStyle(rowData.store_status)">{{rowData.store_status}}</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'mcn_fee_status'">
+                                <span [ngStyle]="myStatusStyle(rowData.mcn_fee_status)">{{rowData.mcn_fee_status}}</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'dev_status'">
+                                <span [ngStyle]="myStatusStyle(rowData.dev_status)">{{rowData.dev_status}}</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'mcn_type_fee_status'">
+                                <span [ngStyle]="myStatusStyle(rowData.mcn_type_fee_status)">{{rowData.mcn_type_fee_status}}</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'cancel_status'">
+                                <span [ngStyle]="statusStyle(rowData.cancel_status)">{{rowData.cancel_status}}</span>
+                            </span>
+                            <span *ngSwitchCase="col.field === 'user_status'">
+                                <span [ngStyle]="userStatusStyle(rowData.user_status)">{{rowData.user_status | statusShow}}</span>
+                            </span>
+                            <span class="text-right inline-block" *ngSwitchCase="col.is_currency">
+                                {{rowData | deepList:col.field | number: '.2'}}
+                            </span>
+                            <span *ngSwitchCase="col.pipe != null">
+                                {{ rowData | deepList:col.field | dynamic:col.pipe }}
+                            </span>
+                            <span *ngSwitchDefault>
+                                {{ rowData | deepList:col.field }}
+                            </span>
+                        </span>
+                    </td>
+                    <td *ngIf="actionRows && actionRows.length > 0 || actionRows && actionRowsCustom.length > 0">
+                    <span [ngSwitch]="true">
+                        <span *ngSwitchCase="default_action == true">
+                            <a *ngFor="let action of actionRows" (click)="doAction(action, rowData)">{{action}}</a>
+                        </span>
+                        <!--this is for batch-->
+                        <span *ngSwitchCase="rowData?.batch_status === 'Pending' && batch_approve_status === true">
+                           <a *ngFor="let action of actionRowsCustom" (click)="doAction(action, rowData)">{{action}}</a>
+                        </span>
+                        <span *ngSwitchCase="rowData?.batch_status === 'Pending' && custom_action === true">
+                           <a *ngFor="let action of actionRows" (click)="doAction(action, rowData)">{{action}}</a>
+                        </span>
+                        <span *ngSwitchCase="rowData?.cancel_status === 'Pending' && show_btn_cancel === true">
+                           <a (click)="doAction('Cancel', rowData)">Cancel</a>
+                        </span>
+                        <span *ngSwitchCase="rowData?.cancel_status === 'Pending' && show_btn_approve === true">
+                           <a (click)="doAction('Approve', rowData)">Approve</a>
+                        </span>
+                        <span *ngSwitchCase="rowData?.cancel_status === 'Pending' && show_btn_reject === true">
+                           <a (click)="doAction('Reject', rowData)">Reject</a>
+                        </span>
+                        <!--this is for refund & approve-->
+                        <span *ngSwitchCase="rowData?.refund_status == 'Pending'">
+                            <a *ngFor="let action of actionRowsCustom" (click)="doAction(action, rowData)">{{action}}</a>
+                        </span>
+                    </span>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage" >
+                <tr *ngIf="isNullShow">
+                    <td [colSpan]="colSpan">No record</td>
+                </tr>
+            </ng-template>
+        </div>
+    </p-table>
+</div>
+<p-paginator *ngIf="actionPaginate" [rows]="pageRows" [first]="pageIndex" [totalRecords]="numRecords" [rowsPerPageOptions]="pageOptions" (onPageChange)="paginate($event)" [alwaysShow]="false"></p-paginator>

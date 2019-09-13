@@ -1,0 +1,55 @@
+<p-dialog width="500" height="470.34"  [closable]="false"  header="Create Refund" [(visible)]="display_prompt" [modal]="true" [responsive]="true"
+          [baseZIndex]="10000">
+
+  <form [formGroup]="f">
+
+    <div class="ui-g">
+
+      <div class="ui-g-12" >
+        <p-radioButton (onClick)="radioChange('full')" name="refund_type"  formControlName="refund_type"  value="refund" label="Full Refund" inputId="opt1"></p-radioButton> &nbsp;&nbsp;
+        <p-radioButton (onClick)="setValue();radioChange('partial')" name="refund_type"  formControlName="refund_type"  value="partial" label="Partial Refund" inputId="opt2"></p-radioButton>
+      </div>
+
+    </div>
+
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <p>Gross Amount :<span class="refund_partial"> {{data?.amount | number: '.2'}}</span></p>
+        <p>Refundable Amount : <span class="refund_partial"> {{data?.less_amount | number: '.2'}}</span></p>
+      </div>
+      <div *ngIf="!disableRefund" class="ui-g-12">
+       <label>Refund Amount <span class="required">*</span></label>
+      </div>
+      <div class="ui-g-12">
+        <input
+                (keyup)="validateAmount()"
+                *ngIf="!disableRefund"
+                type="number"
+                pInputText
+                pKeyFilter="money"
+                formControlName="refund_amount">
+        <small style="color:red" *ngIf="exceed_status">amount exceed</small>
+      </div>
+    </div>
+
+    <div class="ui-g">
+      <div class="ui-g-12">
+        <label>Reason <span class="required">*</span></label>
+      </div>
+      <div class="ui-g-12">
+        <textarea placeholder="enter reason." formControlName="reason" required  [rows]="disableRefund ? 8.5 : 5" cols="30" pInputTextarea></textarea>
+      </div>
+    </div>
+
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <button type="submit" [disabled]="!f.valid || exceed_status === true" pButton icon="fa fa-check" (click)="doAction('Refund',f.value,obj)" label="OK"></button>
+      <button type="button" pButton icon="fa fa-close" (click)="doAction('Close',true,data)" label="Close"></button>
+    </div>
+
+  </div>
+  </form>
+</p-dialog>
+
+
+

@@ -1,0 +1,152 @@
+<!--<div *ngIf="formStatus == 'list'; then list else form"></div>-->
+<!--<ng-template #list>-->
+<!--  <ng-template [ngIf]="gv == 'g'">-->
+<!--  <div class="container-fluid">-->
+<!--    <div class="row">-->
+<!--      <div class="col-md-6 no-padding">-->
+<!--        <button mat-mini-fab color="primary" (click)="showNewForm()"><mat-icon>add</mat-icon></button>-->
+<!--      </div>-->
+<!--      <div class="col-md-6 no-padding text-right">-->
+<!--        <form [formGroup]="fs" (ngSubmit)="search(fs.value)">-->
+<!--          <div class="search-container">-->
+<!--            <mat-input-container flex class="mat-icon-float mat-block mat-title">-->
+<!--              <input matInput placeholder="Search" formControlName="query">-->
+<!--            </mat-input-container>-->
+<!--            <button mat-icon-button color="primary" type="submit"><mat-icon>search</mat-icon></button>-->
+<!--          </div>-->
+<!--        </form>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <div class="row">-->
+<!--      <div class="col-lg-12 no-padding">-->
+<!--        <div class="table-responsive">-->
+<!--          <table class="table table-sm table-hover">-->
+<!--            <thead>-->
+<!--            <tr>-->
+<!--              <th class="text-center">#</th>-->
+<!--              <th>Name</th>-->
+<!--              &lt;!&ndash;<th>Name Khmer</th>?&ndash;&gt;-->
+<!--              <th>E-mail</th>-->
+<!--              <th>Username</th>-->
+<!--              &lt;!&ndash;<th>Image_Path</th>&ndash;&gt;-->
+<!--              <th>Status</th>-->
+<!--              <th>Action</th>-->
+<!--            </tr>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr *ngFor="objApproval obj of objList.results;let i = index">-->
+<!--              <td class="text-center">{{i + 1}}</td>-->
+<!--              <td>{{obj.name_eng}}</td>-->
+<!--              &lobjApproval&ndash;<td>{{obj.name_kh}}</td>&ndash;&gt;-->
+<!--              <td>{{obj.email}}</td>-->
+<!--              <tobjApproval{obj.username}}</td>-->
+<!--              <tobjApproval{obj.status}}</td>-->
+<!--              &lt;!&ndaobjApproval<td>{{srv}}{{obj.image_path}}</td>&ndash;&gt;-->
+<!--              <td>-->
+<!--                <button mat-icon-button class="md-small" color="accent" (click)="showEditFobjApproval(obj)" ><mat-icon>edit</mat-icon></button>-->
+<!--                <button mat-icon-button class="md-small" color="accent" (click)="showViewFobjApproval(obj)" ><mat-icon>camera_alt</mat-icon></button>-->
+<!--              </td>-->
+
+<!--            </tr>-->
+<!--            <tr *ngIf="objList.length <= 0">-->
+<!--              <td colspan="6">No record.</td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--          </table>-->
+<!--        </div>-->
+<!--        <mat-paginator *ngIf="objList.length > numRecords"-->
+<!--                       [length]="objList.length"-->
+<!--                       [pageSize]="numRecords"-->
+<!--                       [pageSizeOptions]="[15, 25, 50, 100]"-->
+<!--                       [pageIndex]="pageIndex"-->
+<!--                       (page)="pageEvent($event)">-->
+<!--        </mat-paginator>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--&lt;!&ndash;</ng-template>&ndash;&gt;-->
+<!--  <ng-template  [ngIf]="gv == 'v'">-->
+<!--    <div class="container-fluid">-->
+<!--      <form [formGroup]="ff" (ngSubmit)="uploadImage(ff.value)">-->
+<!--        <div class="row">-->
+<!--          <div class="col-md-4 offset-4">-->
+<!--            <input type="hidden" formControlName="id">-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--            <div class="text-center">-->
+<!--              <img src={{imagePath}}  class="img-responsive circle" style="max-height: 180px;">-->
+<!--            </div>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--            <div class="text-center">-->
+<!--              <button class="btn btn-sm btn-primary" type="button" (click)="fileInput.click()">Change Photo</button>-->
+<!--            </div>-->
+<!--            <input type="file" id="file"  #fileInput formControlName="user_image" class="hide">-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--            <div class="text-center">-->
+<!--              <h4>{{obj.name_eng}}</h4>-->
+<!--            </div>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--            <div class="m-top-10 text-center">-->
+<!--              <button mat-raised-button color="accent" type="submit" [disabled]="!ff.valid">Change</button>-->
+<!--              <button mat-raised-button (click)="cancelShowForm()">Cancel</button>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </form>-->
+<!--    </div>-->
+<!--  </ng-template>-->
+<!--</ng-template>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--<ng-template #form>-->
+<!--  <h5 class="form-text" *ngIf="formStatus == 'new'">Add User</h5>-->
+<!--  <h5 class="form-text" *ngIf="formStatus == 'edit'">Edit User</h5>-->
+<!--  <form [formGroup]="f" (ngSubmit)="saveObject(f.value)">-->
+<!--    <div class="row">-->
+<!--      <div class="col-md-3">-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--        <input type="hidden" formControlName="id">-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--        <mat-input-container class="mb-4">-->
+<!--          <input matInput placeholder="Name *" formControlName="name_eng">-->
+<!--          <small *ngIf="f.controls['name_eng'].hasError('required') && f.controls['name_eng'].touched" class="form-message text-danger">Field require</small>-->
+<!--          <small *ngIf="f.controls['name_eng'].hasError('maxLength') && f.controls['name_eng'].touched" class="form-message text-danger">Field is 30 character max</small>-->
+<!--        </mat-input-container>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--        &lt;!&ndash;<mat-input-container class="mb-4">&ndash;&gt;-->
+<!--          &lt;!&ndash;<input matInput placeholder="Name [Khmer]" formControlName="name_kh">&ndash;&gt;-->
+<!--        &lt;!&ndash;</mat-input-container>&ndash;&gt;-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--        <mat-input-container class="mb-4">-->
+<!--          <input matInput placeholder="Email address *" formControlName="email">-->
+<!--          <small *ngIf="f.controls['email'].hasError('required') && f.controls['email'].touched" class="form-message text-danger">Field require</small>-->
+<!--          <small *ngIf="f.controls['email'].hasError('email') && !f.controls['email'].hasError('required')  && f.controls['email'].touched" class="form-message text-danger">Field is wrong format</small>-->
+<!--        </mat-input-container>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--        <mat-input-container class="mb-4">-->
+<!--          <input matInput placeholder="User name *" formControlName="username">-->
+<!--          <small *ngIf="f.controls['username'].hasError('required') && f.controls['username'].touched" class="form-message text-danger">Field require</small>-->
+<!--        </mat-input-container>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--        <mat-input-container class="mb-4" [class.hide]="this.formStatus == 'edit'">-->
+<!--          <input  matInput type="password" placeholder="Password *" formControlName="password">-->
+<!--          <small *ngIf="f.controls['password'].hasError('required') && f.controls['password'].touched" class="form-message text-danger">Field require</small>-->
+<!--          <small *ngIf="f.controls['password'].hasError('minlength') && f.controls['password'].touched" class="form-message text-danger">Field is 6 character min</small>-->
+<!--        </mat-input-container>-->
+<!--        <mat-checkbox *ngFor="objApproval obj of objCompany" nameobjApproval{obj.id}}" checkedobjApproval{obj.ischeck}}" (change)="updateComList($evobjApproval,obj)objApproval{obj.com_name}}</mat-checkbox>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--        <mat-form-field>-->
+<!--          <mat-select formControlName="status" placeholder="Select a Status *">-->
+<!--            <mat-option *ngFor="let status of userStatus" [value]="status">{{ status }}</mat-option>-->
+<!--          </mat-select>-->
+<!--          <mat-error class="m-top-22" *ngIf="f.controls['status'].invalid">{{statusValError()}}</mat-error>-->
+<!--        </mat-form-field>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--        <div class="mb-4 m-top-22">-->
+<!--          <button mat-raised-button  color="accent" type="submit" [disabled]="!f.valid">Submit</button>-->
+<!--          <button mat-raised-button (click)="cancelShowForm()">Cancel</button>-->
+<!--        </div>-->
+<!--&lt;!&ndash;&ndash;&gt;-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </form>-->
+<!--</ng-template>-->
+

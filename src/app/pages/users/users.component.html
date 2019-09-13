@@ -1,0 +1,226 @@
+<p-growl></p-growl>
+<div [ngSwitch]="true">
+    <div *ngSwitchCase="formStatus == 'list'">
+        <p-card styleClass="ui-card-shadow">
+            <form [formGroup]="fs" (ngSubmit)="search(fs.getRawValue())">
+                <div class="ui-g">
+                    <div class="ui-g-12 text-left">
+                        <p-button label="Back to Merchant" *ngIf="merchant" icon="fa fa-fw fa-arrow-left" styleClass="ui-button-secondary" (click)="onBack()" ></p-button>
+                        <p-button label="Add new" icon="fa fa-fw fa-plus" (click)="showNewForm()" ></p-button>
+                        <button pButton type="submit" icon="fa fa-fw fa-search" class="ui-button-secondary" label="Search"></button>
+                    </div>
+                    <div class="ui-g-12 ui-g-nopad m-top-8">
+                        <div class="ui-g-3">
+                            <input type="text" pInputText placeholder="Merchant ID/Name" formControlName="merchant_id">
+                        </div>
+                        <div class="ui-g-3">
+                            <input type="text" pInputText placeholder="Name/UserName" formControlName="merchant_user_name">
+                        </div>
+                        <div class="ui-g-3">
+                            <p-dropdown [options]="objMerchantUserStatusList" optionLabel="name" formControlName="user_status" placeholder="-- Merchant User Status --" [showClear]="true"></p-dropdown>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </p-card>
+        <app-list-deep [cols]="cols" [data]="objList.results"
+                       [isNullShow]="isNullShow"
+                       [stopLoading]="stopLoading"
+                       [numRecords]="objList.length"
+                       [pageRows]="numRecord"
+                       (onActionPage)="pageEvent($event)"
+                       [actionRows]="['Detail']" (onActionRow)="onAction($event)"
+                       [default_action]="true">
+        </app-list-deep>
+    </div>
+
+    <div *ngSwitchCase="formStatus == 'new' || formStatus == 'edit'">
+        <form [formGroup]="f" (submit)="saveObject(f.getRawValue())">
+            <input type="hidden"*ngIf="formStatus == 'edit'" formControlName="id">
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label>English name<span class="required">*</span></label>
+                    <input pInputText type="text" formControlName="name_eng" placeholder="Name in English"/>
+                    <small *ngIf="f.controls['name_eng'].hasError('required') && f.controls['name_eng'].touched" class="text-danger">Field require</small>
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label>Khmer Name</label>
+                    <input pInputText type="text" formControlName="name_kh" placeholder="Name in Khmer"/>
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label>User Name <span class="required">*</span></label>
+                    <input pInputText type="text" formControlName="username" placeholder="User Name"/>
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label for="projectType">Gender <span class="required">*</span></label>
+                    <p-dropdown styleClass="full-width"
+                                [showClear]="true"
+                                formControlName="gender"
+                                id="ProjectType"
+                                [options]="objGenderList" [filter]="true"
+                                dataKey="id" optionLabel="sex"
+                                placeholder="-- Select gender --" ></p-dropdown>
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label>Date of birth <span class="required">*</span></label>
+                    <input pInputText type="text" formControlName="dob" placeholder="YYYY-MM-dd"/>
+                    <small *ngIf="f.controls['dob'].hasError('required') && f.controls['dob'].touched" class="text-danger">Field require</small>
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label>Email <span class="required">*</span></label>
+                    <input pInputText type="email" formControlName="email" placeholder="Email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"/>
+                    <small *ngIf="f.controls['email'].hasError('email') && f.controls['email'].touched" class="text-danger">Field required.</small>
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label>Password <span class="required">*</span></label>
+                    <input pInputText type="password" formControlName="password" placeholder="password"/>
+                    <!--<small *ngIf="f.controls['email'].invalid" class="text-danger">Invalid email format.</small>-->
+                    <small *ngIf="f.controls['password'].hasError('password') && f.controls['password'].touched" class="text-danger">Field required.</small>
+                </div>
+            </div>
+
+<!--            <div class="ui-g">-->
+<!--                <div class="ui-g-8">-->
+<!--                    <label>Note</label>-->
+<!--                    <input pInputText type="text" formControlName="merchant_user_note" placeholder="Note"/>-->
+<!--                </div>-->
+<!--            </div>-->
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div class="divider"></div>
+                </div>
+            </div>
+
+            <!-- form user access right -->
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <span class="required">*</span><u>User Access Right</u>
+                </div>
+            </div>
+<!--            <form formArrayName="merchant_user_access">-->
+<!--                <div  *ngFor="let cnt of f.controls['merchant_user_access'].controls; let i = index" [formGroupName]="i">-->
+<!--                    <div class="ui-g">-->
+<!--                        <div class="ui-g-10">-->
+<!--                            <div class="ui-g-2 ui-md-2">-->
+<!--                                <p-checkbox [(ngModel)]="accessMerchantUser" formControlName="access_name"  [value]="objAccessNameList[i].id" [label]="objAccessNameList[i].access_name" (onChange)="onAccessNameClicked(i)"></p-checkbox>&nbsp;&nbsp;&nbsp;-->
+<!--                            </div>-->
+<!--                            <div class="ui-g-3 ui-md-7">-->
+<!--                                <p-multiSelect [(ngModel)]="selectedStores[i]" [disabled]="!isCheckedList[i]" [maxSelectedLabels]="5" formControlName="store" [options]="objListStores[i]" optionLabel="store_name" dataKey="id" defaultLabel="-&#45;&#45; Select store -&#45;&#45;"></p-multiSelect>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </form>-->
+
+            <div class="ui-g">
+                <div class="ui-g-12 action-blog">
+                    <button type="submit" pButton label="Create" [disabled]="!f.valid" *ngIf="formStatus == 'new'; else edit;" icon="fa fa-fw fa-save"></button>
+                    <ng-template #edit>
+                        <button type="submit" pButton label="Update" [disabled]="!f.valid" icon="fa fa-fw fa-save"></button>
+                        <p-button label="Back" styleClass="ui-button-secondary" (click)="showDetailForm(obj)" icon="fa fa-fw fa-arrow-left"></p-button>
+                    </ng-template>
+                    <p-button label="Back to list" styleClass="ui-button-secondary" (click)="cancelShowForm()" icon="fa fa-fw fa-arrow-left"></p-button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div *ngSwitchCase="formStatus == 'detail'">
+        <div class="ui-g">
+            <strong class="ui-g-2">English name:</strong>
+            <div class="ui-g-10">{{obj.name_eng}}</div>
+        </div>
+            <div class="ui-g">
+            <strong class="ui-g-2">Khmer name:</strong>
+            <div class="ui-g-10">{{obj.name_kh}}</div>
+        </div>
+        <div class="ui-g">
+            <strong class="ui-g-2">User Name:</strong>
+            <div class="ui-g-10">{{obj.username}}</div>
+        </div>
+        <div class="ui-g">
+            <strong class="ui-g-2">Gender:</strong>
+            <div class="ui-g-10">{{obj.gender.sex}}</div>
+        </div>
+        <div class="ui-g">
+            <strong class="ui-g-2">Date of birth:</strong>
+            <div class="ui-g-10">{{obj.dob}}</div>
+        </div>
+        <div class="ui-g">
+            <strong class="ui-g-2">Email:</strong>
+            <div class="ui-g-10">{{obj.email | nullShow}}</div>
+        </div>
+        <div class="ui-g">
+            <strong class="ui-g-2">Status:</strong>
+            <div class="ui-g-10">{{obj.status}}</div>
+        </div>
+<!--        <div class="ui-g">-->
+<!--            <strong class="ui-g-2">Merchant User Status:</strong>-->
+<!--            <div class="ui-g-10">-->
+<!--                {{obj.user_status | statusShow}} &nbsp;&nbsp;&nbsp;-->
+<!--                <span [ngSwitch]="true">-->
+<!--                    <p-button *ngIf="obj.user_status === 1" label="In-Active" styleClass="ui-button-warning" icon="fa fa-fw fa-edit" (onClick)="showComment(2)"></p-button>-->
+<!--                    <p-button *ngIf="obj.user_status === 2" label="Active" styleClass="ui-button-success" icon="fa fa-fw fa-edit" (onClick)="showComment(1)"></p-button>-->
+<!--                    <p-button *ngIf="obj.user_status !== 0" label="Close" styleClass="ui-button-danger" icon="fa fa-fw fa-close" (onClick)="showComment(0)"></p-button>-->
+<!--                </span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <div class="ui-g">-->
+<!--            <strong class="ui-g-2">Note</strong>-->
+<!--            <div class="ui-g-10">{{obj.merchant_user_note | nullShow}}</div>-->
+<!--        </div>-->
+        <div class="divider"></div>
+
+        <!-- form user access right -->
+        <div class="ui-g">
+            <div class="ui-g-12">
+                <span class="required">*</span><u>User Access Right</u>
+            </div>
+        </div>
+        <div class="ui-g">
+            <div  *ngFor="let access_name of objAccessNameList; let i = index" class="ui-g-10">
+                <div class="ui-g-2 ui-md-2">
+                    <p-checkbox [(ngModel)]="accessMerchantUser" disabled="true" [value]="access_name.id" [label]="access_name.access_name"></p-checkbox>&nbsp;&nbsp;&nbsp;
+                </div>
+                <div class="ui-g-3 ui-md-7">
+                    <p-multiSelect [(ngModel)]="selectedStores[i]" disabled="true" [maxSelectedLabels]="5"[options]="objStoreList" optionLabel="store_name" dataKey="id"></p-multiSelect>
+                </div>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="ui-g">
+            <div class="ui-g-12 action-blog">
+                <p-button label="Edit" styleClass="ui-button-primary" (click)="showEditForm(obj)" icon="fa fa-fw fa-edit"></p-button>
+                <p-button label="Back to list" styleClass="ui-button-secondary" (click)="cancelShowForm()" icon="fa fa-fw fa-arrow-left"></p-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="displayActive" modal="modal" width="400" [responsive]="true" [header]="user_status | statusShow">
+    <div class="ui-g m-top-8">
+        <div class="ui-g-12">
+            <label for="comment">Comment <span class="required">*</span></label>
+            <textarea id="comment" pInputTextarea placeholder="Comment" [(ngModel)]="comment" rows="3"></textarea>
+        </div>
+    </div>
+    <div class="ui-g m-top-10">
+        <div class="ui-g-12 action-blog text-right">
+            <p-button label="Save" icon="fa fa-fw fa-save" [disabled]="comment == null" (onClick)="changeStatus()"></p-button>
+            <p-button label="Close" icon="fa fa-fw fa-times" styleClass="ui-button-secondary" (onClick)="displayActive=false"></p-button>
+        </div>
+    </div>
+</p-dialog>

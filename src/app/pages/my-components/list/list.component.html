@@ -1,0 +1,56 @@
+<p-table [columns]="cols" [value]="data" sortMode="multiple">
+  <ng-template pTemplate="caption">
+    <div class="ui-g">
+      <div class="ui-g-7 text-left ui-g-nopad">
+        <p-button *ngIf="actionNew" label="Add new" icon="fa fa-fw fa-plus" (click)="newForm()" ></p-button>
+        <ng-content></ng-content>
+      </div>
+      <div class="ui-g-5 ui-g-nopad" *ngIf="actionSearch">
+        <form [formGroup]="fs" (ngSubmit)="search(fs.value)" class="search-container">
+          <input type="text" pInputText placeholder="Filter" formControlName="query" >
+          <button pButton type="submit" icon="fa fa-fw fa-search"></button>
+        </form>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngIf="range" style="width: 65px;">#</th>
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field" [ngClass]="col.class">
+        {{col.header}}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+      <th *ngIf="actionRows">Action</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns" let-i="rowIndex">
+    <tr>
+      <td style="width: 65px; text-align: center;" *ngIf="range">{{i+1}}</td>
+      <td *ngFor="let col of columns" [ngClass]="col.class">
+        <span *ngIf="col.pipe; else noPipe;"> {{ rowData[col.field] | dynamic:col.pipe }}</span>
+        <ng-template #noPipe>{{ rowData[col.field] }}</ng-template>
+      </td>
+      <td *ngIf="actionRows">
+          <span *ngFor="let action of actionRows">
+          <p-button
+                  *ngIf="action == 'Edit'"
+                  (click)="doAction(action, rowData)"
+                  icon="fa fa-fw fa-check" label="{{action}}"
+                  [styleClass]="action == 'Edit' ? 'ui-button-warning' : ''"
+          >
+          </p-button>
+
+          <p-button
+                  *ngIf="action == 'Delete'"
+                  (click)="doAction(action, rowData)"
+                  icon="fa fa-fw fa-trash" label="{{action}}"
+                  [styleClass]="action == 'Delete' ? 'ui-button-danger' : ''"
+          >
+          </p-button>
+          </span>
+
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+<p-paginator *ngIf="actionPaginate" [rows]="pageRows" [first]="pageIndex" [totalRecords]="numRecords" [rowsPerPageOptions]="pageOptions" (onPageChange)="paginate($event)" [alwaysShow]="false"></p-paginator>

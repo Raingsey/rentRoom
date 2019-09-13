@@ -1,0 +1,35 @@
+<div class="ni-card">
+    <p-panel >
+        <p-header>
+            <h5 class="text-center">Rent Apartment Authentication</h5>
+        </p-header>
+        <form name="form" [formGroup]="f" (ngSubmit)="login(f.value)">
+            <div class="ui-g">
+                <div class="ui-g-10 ui-g-offset-1 m-top-22">
+                    <div class="ui-inputgroup">
+                        <span class="ui-inputgroup-addon"><i class="fa fa-user"></i></span>
+                        <input type="text" pInputText placeholder="Username" formControlName="username">
+                    </div>
+                    <small *ngIf="f.controls['username'].hasError('required') && f.controls['username'].touched" class="text-danger">Please enter username</small>
+                </div>
+                <div class="ui-g-10 ui-g-offset-1 m-top-10">
+                    <div class="ui-inputgroup">
+                        <span class="ui-inputgroup-addon"><i class="fa fa-lock"></i></span>
+                        <input type="password" pInputText placeholder="Password" formControlName="password">
+                    </div>
+                    <small *ngIf="f.controls['password'].hasError('required') && f.controls['password'].touched" class="text-danger">Please enter password.</small>
+                </div>
+                <div class="ui-g-10 ui-g-offset-1 m-top-22">
+                    <button pButton color="primary" type="submit" [disabled]="loading || !f.valid" label="Login"></button>
+                </div>
+            </div>
+
+            <div class="login-status">
+                <img *ngIf="loading" class="m-top-10" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                <div *ngIf="error" class="m-top-10 text-danger">{{error}}</div>
+            </div>
+
+        </form>
+
+    </p-panel>
+</div>

@@ -1,0 +1,55 @@
+<!--&lt;!&ndash;<ni-card [title]="'Reset Your Password'" [align]="'center'">&ndash;&gt;-->
+  <!--<form (ngSubmit)="onSubmit()">-->
+    <!--&lt;!&ndash;<mat-input-container>&ndash;&gt;-->
+      <!--&lt;!&ndash;<input matInput placeholder="Email" value="">&ndash;&gt;-->
+    <!--&lt;!&ndash;</mat-input-container>&ndash;&gt;-->
+
+    <!--<p class="text-left small">Enter your email address. We'll send you an email with your username and a link to reset your password.</p>-->
+
+    <!--<button mat-raised-button color="primary" type="submit">Reset</button>-->
+
+    <!--<div class="additional-info">-->
+      <!--<a (click)="gotoLogin()">Log in</a>-->
+      <!--&lt;!&ndash;<span class="divider"></span>&ndash;&gt;-->
+      <!--&lt;!&ndash;<a href="extra-layout/sign-up">Sign up</a>&ndash;&gt;-->
+    <!--</div>-->
+  <!--</form>-->
+<!--&lt;!&ndash;</ni-card>&ndash;&gt;-->
+
+<div class="ni-card">
+    <p-panel>
+        <p-header >
+            <h4 style="text-align: center">Forgot Password</h4>
+        </p-header>
+        <form name="form" [formGroup]="f" (ngSubmit)="onSubmit(f.value)">
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <label >Email<span class="error-msg"></span></label>
+                    <div class="ui-inputgroup">
+                        <span class="ui-inputgroup-addon"><i class="fa fa-user"></i></span>
+                        <input pInputText placeholder="Enter Email..." formControlName="email">
+                    </div>
+                    <small class="error-msg" *ngIf="f.controls['email'].hasError('required') && f.controls['email'].touched" >Please enter your email</small>
+                </div>
+                <div class="ui-g-12">
+                    <button type="submit" class="custom-btn"><i class="fa fa-sign-in"></i> Send Verification Link</button>
+                    <!--<p-button class="login-btn" icon="fa fa-check" iconPos="left" styleClass="full-width ui-button-success" type="submit" [disabled]="loading || !f.valid" label="Login"></p-button>-->
+                </div>
+
+                <label style="text-align: center">
+                    <div class="login-status">
+                        <img *ngIf="loading" class="m-top-10" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                        <div *ngIf="error" class="m-top-10 text-danger">{{error}}</div>
+                    </div>
+                </label>
+
+                <!--<div class="additional-info">-->
+                <!--&lt;!&ndash;<a href="extra-layout/sign-up">Sign up</a>&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="divider"></span>&ndash;&gt;-->
+                <!--<a (click)="gotoForgot()">Forgot your password?</a>-->
+                <!--</div>-->
+            </div>
+        </form>
+
+    </p-panel>
+</div>

@@ -1,0 +1,139 @@
+<p-growl></p-growl>
+<div [ngSwitch]="true">
+  <div *ngSwitchCase="formStatus == 'list'">
+    <p-card styleClass="ui-card-shadow">
+      <form [formGroup]="fs" (ngSubmit)="search(fs.getRawValue())">
+        <div class="ui-g">
+          <div class="ui-g-12 text-left">
+            <p-button label="Add new" icon="fa fa-fw fa-plus" (click)="showNewForm()" ></p-button>
+<!--            <button pButton type="submit" icon="fa fa-fw fa-search" class="ui-button-secondary" label="Search"></button>-->
+          </div>
+        </div>
+      </form>
+    </p-card>
+    <app-list-deep [cols]="cols" [data]="objList.results"
+                   [isNullShow]="isNullShow"
+                   [stopLoading]="stopLoading"
+                   [numRecords]="objList.length"
+                   [pageRows]="numRecord"
+                   (onActionPage)="pageEvent($event)"
+                   [actionRows]="['Detail']" (onActionRow)="onAction($event)"
+                   [default_action]="true">
+    </app-list-deep>
+  </div>
+    <div *ngSwitchCase="formStatus == 'new' || formStatus == 'edit'">
+        <form [formGroup]="f" (submit)="saveObject(f.getRawValue())">
+            <input type="hidden"*ngIf="formStatus == 'edit'" formControlName="id">
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label>House Name<span class="required">*</span></label>
+                    <input pInputText type="text" formControlName="house_name" placeholder=""/>
+                    <small *ngIf="f.controls['house_name'].hasError('required') && f.controls['house_name'].touched" class="text-danger">Field require</small>
+                </div>
+            </div>
+<!--            <div class="ui-g">-->
+<!--                <div class="ui-g-4">-->
+<!--                    <label>User Name <span class="required">*</span></label>-->
+<!--                    <input pInputText type="text" formControlName="username" placeholder="User Name"/>-->
+<!--                </div>-->
+<!--            </div>-->
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label for="owner">Owner <span class="required">*</span></label>
+                    <p-dropdown styleClass="full-width"
+                                [showClear]="true"
+                                formControlName="owner"
+                                id="owner"
+                                [options]="objOwnerList" [filter]="true"
+                                dataKey="id" optionLabel="owner"
+                                placeholder="-- Select owner --" ></p-dropdown>
+                </div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <label for="house_type">House Type <span class="required">*</span></label>
+                    <p-dropdown styleClass="full-width"
+                                [showClear]="true"
+                                formControlName="house_type"
+                                id="house_type"
+                                [options]="objHouseTypeList" [filter]="true"
+                                dataKey="id" optionLabel="house_type"
+                                placeholder="-- Select house type --" ></p-dropdown>
+                </div>
+            </div>
+
+            <!--            <div class="ui-g">-->
+            <!--                <div class="ui-g-8">-->
+            <!--                    <label>Note</label>-->
+            <!--                    <input pInputText type="text" formControlName="merchant_user_note" placeholder="Note"/>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div class="divider"></div>
+                </div>
+            </div>
+
+            <!-- form user access right -->
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <span class="required">*</span><u>User Access Right</u>
+                </div>
+            </div>
+            <!--            <form formArrayName="merchant_user_access">-->
+            <!--                <div  *ngFor="let cnt of f.controls['merchant_user_access'].controls; let i = index" [formGroupName]="i">-->
+            <!--                    <div class="ui-g">-->
+            <!--                        <div class="ui-g-10">-->
+            <!--                            <div class="ui-g-2 ui-md-2">-->
+            <!--                                <p-checkbox [(ngModel)]="accessMerchantUser" formControlName="access_name"  [value]="objAccessNameList[i].id" [label]="objAccessNameList[i].access_name" (onChange)="onAccessNameClicked(i)"></p-checkbox>&nbsp;&nbsp;&nbsp;-->
+            <!--                            </div>-->
+            <!--                            <div class="ui-g-3 ui-md-7">-->
+            <!--                                <p-multiSelect [(ngModel)]="selectedStores[i]" [disabled]="!isCheckedList[i]" [maxSelectedLabels]="5" formControlName="store" [options]="objListStores[i]" optionLabel="store_name" dataKey="id" defaultLabel="-&#45;&#45; Select store -&#45;&#45;"></p-multiSelect>-->
+            <!--                            </div>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </form>-->
+
+            <div class="ui-g">
+                <div class="ui-g-12 action-blog">
+                    <button type="submit" pButton label="Create" [disabled]="!f.valid" *ngIf="formStatus == 'new'; else edit;" icon="fa fa-fw fa-save"></button>
+                    <ng-template #edit>
+                        <button type="submit" pButton label="Update" [disabled]="!f.valid" icon="fa fa-fw fa-save"></button>
+                        <p-button label="Back" styleClass="ui-button-secondary" (click)="showDetailForm(obj)" icon="fa fa-fw fa-arrow-left"></p-button>
+                    </ng-template>
+                    <p-button label="Back to list" styleClass="ui-button-secondary" (click)="cancelShowForm()" icon="fa fa-fw fa-arrow-left"></p-button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div *ngSwitchCase="formStatus == 'detail'">
+        <div class="ui-g">
+            <strong class="ui-g-2">House name:</strong>
+            <div class="ui-g-10">{{obj?.house_name}}</div>
+        </div>
+        <div class="ui-g">
+            <strong class="ui-g-2">Owner:</strong>
+            <div class="ui-g-10">{{obj?.owner?.name_eng}}</div>
+        </div>
+        <div class="ui-g">
+            <strong class="ui-g-2">House type:</strong>
+            <div class="ui-g-10">{{obj?.rent_type?.name}}</div>
+        </div>
+        <div class="ui-g">
+            <strong class="ui-g-2">Note:</strong>
+            <div class="ui-g-10">{{obj?.note}}</div>
+        </div>
+        <div class="ui-g">
+            <strong class="ui-g-2">Location:</strong>
+            <div class="ui-g-10">{{obj?.province?.province}}​Province, {{obj?.district?.district}} district, {{obj?.commune?.commune}} commune, {{obj?.village?.village}} village</div>
+        </div>
+        <div class="divider"></div>
+        <div class="ui-g">
+            <div class="ui-g-12 action-blog">
+                <p-button label="Back to list" styleClass="ui-button-secondary" (click)="cancelShowForm()" icon="fa fa-fw fa-arrow-left"></p-button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,12 @@
+<div class="ui-g form-set">
+    <div class="ui-g-12">
+        <label class="title no-select" (click)="toggleContent()">{{set_title}}
+            <i class="fa fa-caret-down" *ngIf="showContent; else up"></i>
+            <ng-template #up><i class="fa fa-caret-up"></i></ng-template>
+        </label>
+        <div class="line" [ngStyle] = "{'background-color': bg_color}"></div>
+        <div class="content" *ngIf="showContent" [@slideIn] [ngStyle] = "{'background-color': bg_color, 'border-left-color': border_color}">
+            <ng-content></ng-content>
+        </div>
+    </div>
+</div>

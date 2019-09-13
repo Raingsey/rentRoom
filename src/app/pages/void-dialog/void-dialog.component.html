@@ -1,0 +1,16 @@
+<p-dialog header="Void" [(visible)]="display_prompt" [modal]="true" [closable]="false" [responsive]="true"
+          [baseZIndex]="10000">
+  <div class="ui-g">
+    <div class="ui-g-12">
+      <strong>Please provide reason for void.<span class="required">*</span></strong>
+    </div>
+    <div class="ui-g-12">
+      <textarea style="width:100% !important;" required rows="5" [(ngModel)]="reason" cols="30" pInputTextarea></textarea>
+    </div>
+    <div class="ui-g-12">
+      <button type="button" [disabled]="!reason" pButton icon="fa fa-check" (click)="doAction('addReason',data,reason)" label="OK"></button>
+      <button type="button" pButton icon="fa fa-close" (click)="doAction('Close',true,reason)" label="Close"></button>
+    </div>
+  </div>
+</p-dialog>
+

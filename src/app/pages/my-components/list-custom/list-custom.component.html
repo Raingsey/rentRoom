@@ -1,0 +1,36 @@
+<p-table [columns]="cols" [value]="data" (sortFunction)="customSort($event)" [customSort]="true">
+  <ng-template pTemplate="caption">
+    <div class="ui-g">
+    </div>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr >
+      <th *ngIf="range" style="width: 45px;">#</th>
+      <th *ngFor="let col of columns" [pSortableColumn]="col.field" [ngClass]="col.class">
+        {{col.header}}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+      <th *ngIf="actionRows">Action</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-rowData let-columns="columns" let-i="rowIndex">
+    <tr>
+      <td *ngIf="range" style="width: 45px;text-align:center;">{{i+1}}</td>
+
+      <td *ngFor="let col of columns" [ngClass]="col.class">
+
+        <div *ngIf="col.typeImage == 'image'" style="align-items: center">
+          <img [src]="col.baseUrl + rowData['categoryProfile']['0']['file_path']" style="height: 50px;width: 50px" align="center" >
+        </div>
+        <div *ngIf="col.typeImage != 'image'">
+          {{rowData | deepList:col.field | dynamic:col.pipe }}
+        </div>
+
+        <!--{{rowData | deepList:col.field | dynamic:col.pipe }}-->
+      </td>
+      <td *ngIf="actionRows">
+        <a *ngFor="let action of actionRows" (click)="doAction(action, rowData)">{{action}}</a>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

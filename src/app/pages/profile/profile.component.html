@@ -1,0 +1,51 @@
+<p-growl></p-growl>
+<div *ngIf="formStatus == 'list'">
+    <app-list [cols]="cols" [data]="objList.results"
+              (onActionNew)="showNewForm()"
+              [numRecords]="objList.length"
+              [pageRows]="numRecord"
+              (onActionPage)="pageEvent($event)"
+              (onActionSearch)="search($event)"
+              [actionRows]="['Edit','Delete']" (onActionRow)="onAction($event)">
+    </app-list>
+</div>
+
+<div *ngIf="formStatus == 'new' || formStatus == 'edit'">
+    <form [formGroup]="f">
+
+        <input type="hidden" formControlName="id">
+        <div class="ui-g">
+            <label class="ui-g-2">
+                Product :
+            </label>
+            <div class="ui-g-4">
+                <input pInputText type="text" formControlName="product" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <label class="ui-g-2">
+                Price :
+            </label>
+            <div class="ui-g-4">
+                <input pInputText type="text" formControlName="price" />
+            </div>
+        </div>
+        <div class="ui-g">
+            <label class="ui-g-2">
+                Description :
+            </label>
+            <div class="ui-g-4">
+                <input pInputText type="text" formControlName="description" />
+            </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="ui-g action-blog">
+            <button type="submit" pButton label="Create" (click)="saveObject(f.value)" [disabled]="!f.valid" *ngIf="formStatus == 'new'" icon="fa fa-fw fa-save"></button>
+            <button type="submit" pButton label="Update" (click)="saveObject(f.value)" [disabled]="!f.valid" *ngIf="formStatus == 'edit'" icon="fa fa-fw fa-save"></button>
+            &nbsp;&nbsp;&nbsp;<p-button label="Back to list" styleClass="ui-button-secondary" (click)="cancelShowForm()" icon="fa fa-fw fa-arrow-left"></p-button>
+        </div>
+    </form>
+</div>
+
+<p-confirmDialog></p-confirmDialog>
